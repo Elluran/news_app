@@ -31,15 +31,15 @@ async def get_news(item: Item):
     unfiltered_news = []
     for channel in item.channels:
         news = [
-            message.text
-            for message in await client.get_messages(channel, limit=7)
+            {"text": message.text, "source": channel}
+            for message in await client.get_messages(channel, limit=4)
         ]
         unfiltered_news += news
 
     filtered_news = [
         news
         for news in unfiltered_news
-        if not text_contains_topic(item.banned_topics, news)
+        if not text_contains_topic(item.banned_topics, news["text"])
     ]
 
     await client.disconnect()
