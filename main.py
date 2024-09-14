@@ -1,4 +1,5 @@
 import streamlit as st
+from streamlit_tags import st_tags, st_tags_sidebar
 import requests
 
 
@@ -10,10 +11,16 @@ def get_news_from_telegram(channels, banned_topics):
     return response.json()
 
 
-st.title("News App")
-banned_topics = st.text_area(label="Negative-topics").split(";")
+st.title("Feed")
 
-channels = ["t.me/test_channel_news_123"]
+with st.sidebar:
+    st.title("News App")
+    banned_topics = st_tags(label="Negative-topics:")
+    channels = st_tags(
+        value=["t.me/test_channel_news_123"], label="Telegram channels:"
+    )
+
+
 news_list = get_news_from_telegram(channels, banned_topics)
 
 for item in news_list:
