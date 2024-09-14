@@ -16,3 +16,21 @@ def text_contains_topic(banned_topics, text):
     print("-------------------")
 
     return "[yes]" in output["message"]["content"]
+
+
+def shorten_text(text):
+    prompt = f"""{text}
+
+    Shorten this text to only one sentence."""
+    print(prompt)
+    output = ollama.chat(
+        model="llama3.1:8b",
+        messages=[{"role": "user", "content": prompt}],
+        stream=False,
+        options={"num_predict": 100, "seed": 42},
+    )
+
+    print(output["message"]["content"])
+    print("-------------------")
+
+    return output["message"]["content"]
