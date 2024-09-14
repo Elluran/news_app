@@ -12,6 +12,7 @@ class Item(BaseModel):
     channels: List[str]
     banned_topics: List[str]
     short: bool = False
+    news_to_fetch: int = 3
 
 
 async def get_telegram_client():
@@ -32,10 +33,12 @@ async def get_news(item: Item):
     unfiltered_news = []
     for channel in item.channels:
         news = []
-        for message in await client.get_messages(channel, limit=2):
-            if message.text != "":
+        for message in await client.get_messages(
+            channel, limit=item.news_to_fetch
+        ):
+            if message.text:
                 news.append({"text": message.text, "source": channel})
-        
+
         unfiltered_news += news
 
     filtered_news = []
