@@ -1,7 +1,7 @@
 from typing import Union, List
 from fastapi import FastAPI
 from pydantic import BaseModel
-from llm_filter import text_contains_topic
+from llm_functions import text_contains_topic
 from telethon import TelegramClient, events, sync
 import tomli
 
