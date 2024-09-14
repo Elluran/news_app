@@ -16,11 +16,11 @@ class Item(BaseModel):
 
 
 async def get_telegram_client():
-    with open("telegram_creds.toml", "rb") as f:
+    with open("creds.toml", "rb") as f:
         creds = tomli.load(f)
 
     client = TelegramClient(
-        creds["phone_number"], creds["api_id"], creds["api_hash"]
+        creds["telegram"]["phone_number"], creds["telegram"]["api_id"], creds["telegram"]["api_hash"]
     )
     return client
 
