@@ -36,12 +36,17 @@ async def get_news(item: Item):
         ]
         unfiltered_news += news
 
-    filtered_news = [
-        news
-        for news in unfiltered_news
-        if not text_contains_topic(item.banned_topics, news["text"])
-    ]
+    filtered_news = []
+    filtered_out_news = []
+    for news in unfiltered_news:
+        if text_contains_topic(item.banned_topics, news["text"]):
+            filtered_out_news.append(news)
+        else:
+            filtered_news.append(news)
 
     await client.disconnect()
 
-    return filtered_news
+    return {
+        "filtered_news": filtered_news,
+        "filtered_out_news": filtered_out_news,
+    }

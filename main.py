@@ -11,8 +11,6 @@ def get_news_from_telegram(channels, banned_topics):
     return response.json()
 
 
-st.title("Feed")
-
 with st.sidebar:
     st.title("News App")
     banned_topics = st_tags(label="Negative-topics:")
@@ -21,9 +19,18 @@ with st.sidebar:
     )
 
 
-news_list = get_news_from_telegram(channels, banned_topics)
+st.title("Feed")
 
-for item in news_list:
+news = get_news_from_telegram(channels, banned_topics)
+
+for item in news["filtered_news"]:
+    st.markdown(item["text"])
+    st.caption("Source:  " + item["source"])
+    st.divider()
+
+st.title("Filtered out news")
+
+for item in news["filtered_out_news"]:
     st.markdown(item["text"])
     st.caption("Source:  " + item["source"])
     st.divider()
