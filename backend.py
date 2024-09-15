@@ -20,7 +20,9 @@ async def get_telegram_client():
         creds = tomli.load(f)
 
     client = TelegramClient(
-        creds["telegram"]["phone_number"], creds["telegram"]["api_id"], creds["telegram"]["api_hash"]
+        creds["telegram"]["phone_number"],
+        creds["telegram"]["api_id"],
+        creds["telegram"]["api_hash"],
     )
     return client
 
@@ -37,13 +39,23 @@ async def get_news(item: Item):
             channel, limit=item.news_to_fetch
         ):
             if message.text:
-                news.append({"text": message.text, "source": channel})
+                news.append(
+                    {
+                        "text": message.text,
+                        "source": channel,
+                        "date": message.date,
+                    }
+                )
 
         unfiltered_news += news
+
+    unfiltered_news = reversed(sorted(unfiltered_news, key=lambda x: x["date"]))
 
     filtered_news = []
     filtered_out_news = []
     for news in unfiltered_news:
+        news["date"] = news["date"].strftime("%Y-%m-%d %H:%M")
+
         if text_contains_topic(item.banned_topics, news["text"]):
             filtered_out_news.append(news)
         else:

@@ -37,14 +37,22 @@ with tab1:
 
     for item in news["filtered_news"]:
         st.markdown(item["text"])
-        st.caption("Source:  " + item["source"])
+        st.caption(
+            f"<span> <p style='float: left'> Source: {item['source']} </p>"
+            + f"<p style='float: right'> {item['date']} </p> </span>",
+            unsafe_allow_html=True,
+        )
         st.divider()
 
     st.title("Filtered out news")
 
     for item in news["filtered_out_news"]:
         st.markdown(item["text"])
-        st.caption("Source:  " + item["source"])
+        st.caption(
+            f"<span> <p style='float: left'> Source: {item['source']} </p>"
+            + f"<p style='float: right'> {item['date']} </p> </span>",
+            unsafe_allow_html=True,
+        )
         st.divider()
 
 with tab2:
@@ -56,12 +64,19 @@ with tab2:
 
     for item in news["filtered_news"]:
         st.markdown(item["text"])
-        st.caption("Source:  " + item["source"])
-        # st.divider()
+        st.caption(
+            f"<span> <p style='float: left'> Source: {item['source']} </p>"
+            + f"<p style='float: right'> {item['date']} </p> </span>",
+            unsafe_allow_html=True,
+        )
 
     st.title("Filtered out news")
 
     for item in news["filtered_out_news"]:
         st.markdown(item["text"])
-        st.caption("Source:  " + item["source"])
+        st.caption(
+            f"<span> <p style='float: left'> Source: {item['source']} </p>"
+            + f"<p style='float: right'> {item['date']} </p> </span>",
+            unsafe_allow_html=True,
+        )
         st.divider()
