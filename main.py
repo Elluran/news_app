@@ -11,6 +11,7 @@ def get_news_from_telegram(
         "channels": channels,
         "banned_topics": banned_topics,
         "short": short,
+        "news_to_fetch": news_to_fetch,
     }
 
     response = requests.post(url, json=data)

@@ -3,6 +3,7 @@ from groq import Groq
 import httpx
 from httpx_socks import SyncProxyTransport
 import tomli
+import functools
 
 with open("creds.toml", "rb") as f:
     creds = tomli.load(f)["llm"]
@@ -10,7 +11,7 @@ with open("creds.toml", "rb") as f:
 transport = SyncProxyTransport.from_url(creds["proxy"])
 httpx_client = httpx.Client(transport=transport)
 
-
+@functools.lru_cache(maxsize=64)
 def ask_model(host, prompt, max_tokens, seed, temperature=None):
     if host == "local":
         output = ollama.chat(
