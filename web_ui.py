@@ -3,6 +3,7 @@ from streamlit_tags import st_tags, st_tags_sidebar
 import requests
 import json
 
+
 def get_news_from_telegram(
     channels, banned_topics, news_to_fetch=3, short=False
 ):
@@ -22,9 +23,10 @@ with st.sidebar:
     st.title("News App")
 
     banned_topics_value = st.query_params.get("banned_topics") or ["war"]
-    channels_value = st.query_params.get("channels") or ["t.me/test_channel_news_123"]
+    channels_value = st.query_params.get("channels") or [
+        "t.me/test_channel_news_123"
+    ]
     news_to_fetch_value = int(st.query_params.get("news_to_fetch") or 2)
-
 
     if isinstance(banned_topics_value, str):
         banned_topics_value = json.loads(banned_topics_value)
@@ -33,15 +35,15 @@ with st.sidebar:
         channels_value = json.loads(channels_value)
 
     banned_topics = st_tags(label="Negative-topics:", value=banned_topics_value)
-    channels = st_tags(
-        value=channels_value, label="Telegram channels:"
-    )
+    channels = st_tags(value=channels_value, label="Telegram channels:")
     news_to_fetch = int(
-        st.number_input("news to fetch from each channel", value=news_to_fetch_value)
+        st.number_input(
+            "news to fetch from each channel", value=news_to_fetch_value
+        )
     )
 
     st.query_params["banned_topics"] = json.dumps(banned_topics)
-    st.query_params["channels"] = json.dumps(channels) 
+    st.query_params["channels"] = json.dumps(channels)
     st.query_params["news_to_fetch"] = news_to_fetch
 
 tab1, tab2 = st.tabs(["Feed", "Short"])
