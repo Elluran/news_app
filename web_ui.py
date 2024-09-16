@@ -46,30 +46,30 @@ with st.sidebar:
 
 tab1, tab2 = st.tabs(["Feed", "Short"])
 
-with tab1:
-    st.title("Feed")
+# with tab1:
+#     st.title("Feed")
 
-    news = get_news_from_telegram(channels, banned_topics, news_to_fetch)
+#     news = get_news_from_telegram(channels, banned_topics, news_to_fetch)
 
-    for item in news["filtered_news"]:
-        st.markdown(item["text"])
-        st.caption(
-            f"<span> <p style='float: left'> Source: {item['source']} </p>"
-            + f"<p style='float: right'> {item['date']} </p> </span>",
-            unsafe_allow_html=True,
-        )
-        st.divider()
+#     for item in news["filtered_news"]:
+#         st.markdown(item["text"])
+#         st.caption(
+#             f"<span> <p style='float: left'> Source: {item['source']} </p>"
+#             + f"<p style='float: right'> {item['date']} </p> </span>",
+#             unsafe_allow_html=True,
+#         )
+#         st.divider()
 
-    st.title("Filtered out news")
+#     st.title("Filtered out news")
 
-    for item in news["filtered_out_news"]:
-        st.markdown(item["text"])
-        st.caption(
-            f"<span> <p style='float: left'> Source: {item['source']} </p>"
-            + f"<p style='float: right'> {item['date']} </p> </span>",
-            unsafe_allow_html=True,
-        )
-        st.divider()
+#     for item in news["filtered_out_news"]:
+#         st.markdown(item["text"])
+#         st.caption(
+#             f"<span> <p style='float: left'> Source: {item['source']} </p>"
+#             + f"<p style='float: right'> {item['date']} </p> </span>",
+#             unsafe_allow_html=True,
+#         )
+#         st.divider()
 
 with tab2:
     st.title("Short")
