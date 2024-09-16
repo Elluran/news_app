@@ -3,6 +3,7 @@ from datetime import datetime
 from telethon import TelegramClient, events, sync
 import asyncio
 import tomli
+import time
 
 client = MongoClient("mongodb://localhost:27017/")
 
@@ -77,10 +78,12 @@ async def main():
 
         if len(messages) > 0:
             update_message_id(channel, messages[0].id)
-        
+
         print(f"Added {len(messages)} new messages")
 
     await client.disconnect()
 
 
-asyncio.run(main())
+while True:
+    asyncio.run(main())
+    time.sleep(600)
