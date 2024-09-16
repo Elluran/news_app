@@ -2,12 +2,13 @@ import streamlit as st
 from streamlit_tags import st_tags, st_tags_sidebar
 import requests
 import json
+import os
 
 
 def get_news_from_telegram(
     channels, banned_topics, news_to_fetch=3, short=False
 ):
-    url = "http://127.0.0.1:8000/get_news/"
+    url = os.getenv("SERVER_URL") + "/get_news/"
     data = {
         "channels": channels,
         "banned_topics": banned_topics,

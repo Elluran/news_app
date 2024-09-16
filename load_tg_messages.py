@@ -4,8 +4,10 @@ from telethon import TelegramClient, events, sync
 import asyncio
 import tomli
 import time
+import os
 
-client = MongoClient("mongodb://localhost:27017/")
+
+client = MongoClient(os.getenv("MONGODB_ADDRESS"))
 
 db = client["news_database"]
 posts_collection = db["posts"]

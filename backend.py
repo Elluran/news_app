@@ -4,9 +4,10 @@ from pydantic import BaseModel
 from llm_functions import text_contains_topic, shorten_text
 from pymongo import MongoClient
 import tomli
+import os
 
 app = FastAPI()
-db_client = MongoClient("mongodb://localhost:27017/")
+db_client = MongoClient(os.getenv("MONGODB_ADDRESS"))
 db = db_client["news_database"]
 posts_collection = db["posts"]
 sources_collection = db["channels"]
