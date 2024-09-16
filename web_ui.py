@@ -95,4 +95,4 @@ with tab2:
             + f"<p style='float: right'> {item['date']} </p> </span>",
             unsafe_allow_html=True,
         )
-        st.divider()
+        st.write("<hr style='margin-top:7px'>", unsafe_allow_html=True)
