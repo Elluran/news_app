@@ -81,7 +81,7 @@ def shorten_text(text):
     # Shorten this text to only one sentence."""
     prompt = f"""{text}
 
-    Сократи данный текст до одного предложения."""
+    Сократи данный текст до одного предложения на русском."""
     print(prompt)
 
     if text := redis_client.get(prompt):
