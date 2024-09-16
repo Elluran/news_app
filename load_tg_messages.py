@@ -5,6 +5,7 @@ import asyncio
 import tomli
 import time
 import os
+import random
 
 
 client = MongoClient(os.getenv("MONGODB_ADDRESS"))
@@ -88,4 +89,4 @@ async def main():
 
 while True:
     asyncio.run(main())
-    time.sleep(600)
+    time.sleep(300 + random.randint(0, 120))
