@@ -11,7 +11,7 @@ with open("creds.toml", "rb") as f:
 transport = SyncProxyTransport.from_url(creds["proxy"])
 httpx_client = httpx.Client(transport=transport)
 
-@functools.lru_cache(maxsize=64)
+@functools.lru_cache(maxsize=128)
 def ask_model(host, prompt, max_tokens, seed, temperature=None):
     if host == "local":
         output = ollama.chat(

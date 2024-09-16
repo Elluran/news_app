@@ -2,48 +2,80 @@ from typing import Union, List
 from fastapi import FastAPI
 from pydantic import BaseModel
 from llm_functions import text_contains_topic, shorten_text
-from telethon import TelegramClient, events, sync
+from pymongo import MongoClient
 import tomli
 
 app = FastAPI()
+db_client = MongoClient("mongodb://localhost:27017/")
+db = db_client["news_database"]
+posts_collection = db["posts"]
+sources_collection = db["channels"]
 
 
-class Item(BaseModel):
+def get_messages_grouped_by_source(n_messages_to_fetch, sources):
+    pipeline = [
+        {"$match": {"source": {"$in": sources}}},
+        {"$sort": {"date": -1}},
+        {
+            "$group": {
+                "_id": "$source",
+                "messages": {
+                    "$push": {
+                        "id": "$_id",
+                        "text": "$text",
+                        "short_version": "$short_version",
+                        "date": "$date",
+                    }
+                },
+            }
+        },
+        {
+            "$project": {
+                "messages": {"$slice": ["$messages", n_messages_to_fetch]},
+                "_id": 1,
+            }
+        },
+    ]
+    grouped_messages = list(posts_collection.aggregate(pipeline))
+    return grouped_messages
+
+
+class GetNewsBody(BaseModel):
     channels: List[str]
     banned_topics: List[str]
     short: bool = False
     news_to_fetch: int = 3
 
 
-async def get_telegram_client():
-    with open("creds.toml", "rb") as f:
-        creds = tomli.load(f)
-
-    client = TelegramClient(
-        creds["telegram"]["phone_number"],
-        creds["telegram"]["api_id"],
-        creds["telegram"]["api_hash"],
+def add_source(source):
+    sources_collection.update_one(
+        {"_id": source},
+        {"$setOnInsert": {"_id": source, "message_id": 0}},
+        upsert=True,
     )
-    return client
 
 
 @app.post("/get_news/")
-async def get_news(item: Item):
-    client = await get_telegram_client()
-    await client.connect()
+async def get_news(body: GetNewsBody):
+
+    for channel in body.channels:
+        add_source(channel)
+
+    grouped_news = get_messages_grouped_by_source(
+        body.news_to_fetch, body.channels
+    )
 
     unfiltered_news = []
-    for channel in item.channels:
+    for source in grouped_news:
         news = []
-        for message in await client.get_messages(
-            channel, limit=item.news_to_fetch
-        ):
-            if message.text:
+        for message in source["messages"]:
+            print(message)
+            if message["text"]:
                 news.append(
                     {
-                        "text": message.text,
-                        "source": channel,
-                        "date": message.date,
+                        "text": message["text"],
+                        "source": source["_id"],
+                        "date": message["date"],
                     }
                 )
 
@@ -56,14 +88,12 @@ async def get_news(item: Item):
     for news in unfiltered_news:
         news["date"] = news["date"].strftime("%Y-%m-%d %H:%M")
 
-        if text_contains_topic(item.banned_topics, news["text"]):
+        if text_contains_topic(body.banned_topics, news["text"]):
             filtered_out_news.append(news)
         else:
             filtered_news.append(news)
 
-    await client.disconnect()
-
-    if item.short:
+    if body.short:
         for news in filtered_news:
             news["text"] = shorten_text(news["text"])
 
