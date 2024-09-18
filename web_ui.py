@@ -8,7 +8,7 @@ import os
 def get_news_from_telegram(
     channels, banned_topics, news_to_fetch=3, short=False
 ):
-    url = os.getenv("SERVER_URL") + "/get_news/"
+    url = st.secrets["SERVER_URL"] + "/get_news/"
     data = {
         "channels": channels,
         "banned_topics": banned_topics,

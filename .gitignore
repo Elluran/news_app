@@ -7,3 +7,4 @@ telegram_creds.toml
 creds.toml
 data/
 mongodata/
+.streamlit
