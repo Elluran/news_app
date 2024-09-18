@@ -82,7 +82,7 @@ async def main():
         if len(messages) > 0:
             update_message_id(channel, messages[0].id)
 
-        print(f"Added {len(messages)} new messages")
+        print(f"Added {len(messages)} new messages from {channel}", flush=True)
 
     await client.disconnect()
 
