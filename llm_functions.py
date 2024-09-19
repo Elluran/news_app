@@ -67,7 +67,7 @@ def text_contains_topic(banned_topics, text):
     prompt = f"""{text} 
     Does this text contain information about any of these topics: {', '.join(banned_topics).lower()}? Only output [yes] or [no]"""
 
-    print(prompt)
+    print(prompt, flush=True)
 
     if text := redis_client.get(prompt):
         output = text.decode("utf-8")
@@ -78,7 +78,7 @@ def text_contains_topic(banned_topics, text):
         )
         redis_client.set(prompt, output)
 
-    print(output)
+    print(output, flush=True)
     print("-------------------")
 
     return "[yes]" in output
@@ -90,17 +90,19 @@ def shorten_text(text):
     # Shorten this text to only one sentence."""
     prompt = f"""{text}
 
-    Сократи данный текст до одного предложения на русском."""
-    print(prompt)
+Сократи данный текст до одного предложения на русском языке: """
+    print(prompt, flush=True)
 
     if text := redis_client.get(prompt):
         output = text.decode("utf-8")
         print("found output in cache")
     else:
-        output = ask_model("groq", prompt, max_tokens=100, seed=42)
+        output = ask_model(
+            "groq", prompt, max_tokens=100, seed=42, temperature=0.6
+        )
         redis_client.set(prompt, output)
 
-    print(output)
+    print(output, flush=True)
     print("-------------------")
 
     return output
