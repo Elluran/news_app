@@ -61,19 +61,22 @@ def ask_model(host, prompt, max_tokens, seed, temperature=None):
 
 
 def text_contains_topic(banned_topics, text):
+#     prompt = f"""{text} 
+# Does this text contain information about any of these topics: {', '.join(banned_topics).lower()}? Only output [yes] or [no]"""
+
     prompt = f"""{text} 
-    Does this text contain information about any of these topics: {', '.join(banned_topics).lower()}? Only output [yes] or [no]"""
+Is this text related to any of these topics: {', '.join(banned_topics).lower()}? Only output [yes] or [no]"""
 
     print(prompt, flush=True)
 
-    if text := redis_client.get(prompt):
-        output = text.decode("utf-8")
-        print("found output in cache")
-    else:
-        output = ask_model(
-            "groq", prompt, max_tokens=10, seed=42, temperature=0.6
-        )
-        redis_client.set(prompt, output)
+    # if text := redis_client.get(prompt):
+    #     output = text.decode("utf-8")
+    #     print("found output in cache")
+    # else:
+    output = ask_model(
+        "groq", prompt, max_tokens=10, seed=42, temperature=0.3
+    )
+    # redis_client.set(prompt, output)
 
     print(output, flush=True)
     print("-------------------")
