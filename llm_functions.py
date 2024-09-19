@@ -21,9 +21,6 @@ redis_client = redis.StrictRedis(
 if "proxy" in creds["llm"]:
     transport = SyncProxyTransport.from_url(creds["llm"]["proxy"])
     httpx_client = httpx.Client(transport=transport)
-)
-transport = SyncProxyTransport.from_url(creds["llm"]["proxy"])
-httpx_client = httpx.Client(transport=transport)
 
 
 def ask_model(host, prompt, max_tokens, seed, temperature=None):
