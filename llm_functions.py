@@ -5,13 +5,22 @@ import httpx
 from httpx_socks import SyncProxyTransport
 import tomli
 import functools
+import os
 
 
 with open("creds.toml", "rb") as f:
     creds = tomli.load(f)
 
 redis_client = redis.StrictRedis(
-    host="localhost", port=6379, db=0, password=creds["redis"]["password"]
+    host=os.getenv("REDIS_HOST"),
+    port=os.getenv("REDIS_PORT"),
+    db=0,
+    password=creds["redis"]["password"],
+)
+
+if "proxy" in creds["llm"]:
+    transport = SyncProxyTransport.from_url(creds["llm"]["proxy"])
+    httpx_client = httpx.Client(transport=transport)
 )
 transport = SyncProxyTransport.from_url(creds["llm"]["proxy"])
 httpx_client = httpx.Client(transport=transport)
@@ -33,7 +42,7 @@ def ask_model(host, prompt, max_tokens, seed, temperature=None):
     elif host == "groq":
         client = Groq(
             api_key=creds["llm"]["groq_api_key"],
-            http_client=httpx_client,
+            http_client=httpx_client if "proxy" in creds["llm"] else None,
         )
 
         chat_completion = client.chat.completions.create(
