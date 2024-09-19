@@ -69,14 +69,14 @@ Is this text related to any of these topics: {', '.join(banned_topics).lower()}?
 
     print(prompt, flush=True)
 
-    # if text := redis_client.get(prompt):
-    #     output = text.decode("utf-8")
-    #     print("found output in cache")
-    # else:
-    output = ask_model(
-        "groq", prompt, max_tokens=10, seed=42, temperature=0.3
-    )
-    # redis_client.set(prompt, output)
+    if text := redis_client.get(prompt):
+        output = text.decode("utf-8")
+        print("found output in cache")
+    else:
+        output = ask_model(
+            "groq", prompt, max_tokens=10, seed=42, temperature=0.3
+        )
+        redis_client.set(prompt, output)
 
     print(output, flush=True)
     print("-------------------")
